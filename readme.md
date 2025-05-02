@@ -1,13 +1,10 @@
 # LightEMMA: Lightweight End-to-end Multimodal Autonomous Driving
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![arXiv](https://img.shields.io/badge/arXiv-2505.00284-red.svg)](https://arxiv.org/abs/2505.00284)
 [![nuScenes](https://img.shields.io/badge/dataset-nuScenes-green.svg)](https://www.nuscenes.org/nuscenes)
 [![Hugging Face](https://img.shields.io/badge/🤗-Huggingface-yellow.svg)](https://huggingface.co/)
 
-Paper link: https://drive.google.com/file/d/1WUIiowMhOiOHoPpaUjZvkPRmG5QOcX7f/view?usp=sharing
-
-LightEMMA is an open-loop, end-to-end autonomous driving framework designed to leverage the zero-shot capabilities of vision-language models (VLMs). Its primary task is the prediction of driving actions and trajectories, evaluated using real-world driving scenarios from the nuScenes dataset. The framework integrates multiple state-of-the-art VLMs, including **GPT**, **Claude**, **Gemini**, **Qwen**, **DeepSeek**, **Llama**.
+**LightEMMA** is an open-loop, end-to-end autonomous driving framework designed to leverage the zero-shot capabilities of vision-language models (VLMs). Its primary task is the prediction of driving actions and trajectories, evaluated using real-world driving scenarios from the nuScenes dataset. The framework integrates multiple state-of-the-art VLMs, including **GPT**, **Claude**, **Gemini**, **Qwen**, **DeepSeek**, **LLaMA**.
 
 ![My Image](images/architecture.png)
 
@@ -218,13 +215,6 @@ If visualization is not needed (faster):
 python evaluate.py --results_dir results/gpt-4o_20250415-123 --no_vis
 ```
 
-<!-- If the nuScenes dataset is stored in a different location than where the evaluations were generated:
-
-```bash
-python evaluate.py --results_dir results/gpt-4o_20250415-123 --local_samples_path /path/to/nuscenes/samples
-``` -->
-
-
 ### Comparing Models
 
 To process evaluation results from multiple models and generate comparative analysis:
@@ -232,6 +222,15 @@ To process evaluation results from multiple models and generate comparative anal
 ```bash
 python evaluate_all.py
 ```
+
+### Pre-generated Outputs
+
+We have uploaded all results generated in this paper into the results folder as JSON files, with each file corresponding to one scenario. Since the image files on your system are stored in a different location than the paths indicated in the JSON files, you will need to execute the following command to correctly generate visualizations. If you prefer not to generate visualizations, simply run the command with the `--no_vis` flag.
+
+```bash
+python evaluate.py --results_dir results/gpt-4o_20250415-123 --local_samples_path /path/to/nuscenes/samples
+```
+
 
 <!-- ## Results Directory Structure
 
@@ -291,10 +290,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 If you use LightEMMA in your research, please consider citing:
 
 ```bibtex
-@article{lightemma2025,
-  title={LightEMMA: Lightweight End-to-end Multimodal Autonomous Driving via Vision Language Models},
-  author={...},
-  journal={...},
-  year={2025}
+@article{lightemma,
+      title={LightEMMA: Lightweight End-to-End Multimodal Model for Autonomous Driving}, 
+      author={Zhijie Qiao and Haowei Li and Zhong Cao and Henry X. Liu},
+      year={2025},
+      eprint={2505.00284},
+      url={https://arxiv.org/abs/2505.00284}, 
 }
 ```
