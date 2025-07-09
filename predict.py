@@ -9,6 +9,8 @@ from nuscenes import NuScenes
 from utils import *
 from vlm import ModelHandler
 
+import numpy as np
+
 def parse_args():
     parser = argparse.ArgumentParser(description="LightEMMA: End-to-End Autonomous Driving")
     parser.add_argument("--model", type=str, default="gpt-4o", 
@@ -213,7 +215,7 @@ def run_prediction():
                     prompt=scene_prompt,
                     image_path=image_path
                 )
-                print("Scene description:", scene_description)
+                # print("Scene description:", scene_description)
                 
                 # Generate intent prompt based on scene description
                 intent_prompt = (
@@ -241,7 +243,7 @@ def run_prediction():
                     prompt=intent_prompt,
                     image_path=image_path
                 )
-                print("Driving intent:", driving_intent)
+                # print("Driving intent:", driving_intent)
                 
                 # Generate waypoint prompt based on scene and intent
                 waypoint_prompt = (
@@ -319,6 +321,9 @@ def run_prediction():
                             "pred_actions": pred_actions,
                             "trajectory": prediction
                         }
+                        
+                        predicted_array = np.round(np.array(prediction), 3)
+                        print("Predicted trajectory: ", predicted_array.tolist())
                     else:
                         frame_data["predictions"] = {
                             "pred_actions_str": pred_actions_str

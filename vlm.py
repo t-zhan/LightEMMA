@@ -33,7 +33,7 @@ class ModelHandler:
         Imports are done dynamically to avoid package conflicts.
         """
         os.environ["HUGGINGFACE_HUB_TOKEN"] = self.config["api_keys"]["huggingface"]
-        os.environ["TRANSFORMERS_CACHE"] = self.config["model_path"]["huggingface"]
+        os.environ["HF_HOME"] = self.config["model_path"]["huggingface"]
     
         if self.model_name in ["gpt-4o", "gpt-4.1", "claude-3.7", "claude-3.5", "gemini-2.5", "gemini-2.0"]:
             print(f"Using {self.model_name} via API, no local model initialization required.")
@@ -44,19 +44,18 @@ class ModelHandler:
                 # Import Qwen modules only when needed
                 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
                 
-                if self.model_name == "qwen2.5-7b":
-                    print("Initializing Qwen2.5-VL-7B-Instruct model...")
-                    model_path = "Qwen/Qwen2.5-VL-7B-Instruct"
-                else:
-                    print("Initializing Qwen2.5-VL-72B-Instruct model...")
-                    model_path = "Qwen/Qwen2.5-VL-72B-Instruct"
-                    
+                model_path = self.config["model_path"].get(self.model_name)
+                print(f"Initializing {self.model_name} model...")
+                
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model_path, 
                     torch_dtype=torch.bfloat16, 
                     device_map="auto"
                 )
-                processor = AutoProcessor.from_pretrained(model_path)
+                processor = AutoProcessor.from_pretrained(
+                    model_path,
+                    use_fast=True
+                )
                 return model, processor
             except ImportError as e:
                 print(f"Qwen modules not found in current environment: {e}")
@@ -358,7 +357,7 @@ class ModelHandler:
                 generated_ids = self.model_instance.generate(
                     **inputs, 
                     max_new_tokens=512,
-                    do_sample=False
+                    # do_sample=False
                 )
                 
                 # Process output according to Qwen's method
