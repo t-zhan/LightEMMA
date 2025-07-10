@@ -112,6 +112,7 @@ def train(attn_implementation="flash_attention_2"):
         )
         data_args.image_processor = AutoProcessor.from_pretrained(
             model_args.model_name_or_path,
+            use_fast=True,
         ).image_processor
         data_args.model_type = "qwen2.5vl"
     else:
