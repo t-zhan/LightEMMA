@@ -2,9 +2,16 @@
 # Complete QwenVL Training Launch Script with Full Parameter Documentation
 
 # ======================
+# Distributed Configuration
+# ======================
+MASTER_ADDR="127.0.0.1"                     # [Required] Master node IP for multi-GPU training
+MASTER_PORT=$(shuf -i 20000-29999 -n 1)     # Random port to avoid conflicts
+NPROC_PER_NODE=$(nvidia-smi --list-gpus | wc -l)  # Automatically detects available GPUs
+
+# ======================
 # Path Configuration
 # ======================
-MODEL_PATH="pretrained/Qwen/Qwen2.5-VL-3B-Instruct"  # [ModelArguments] Pretrained model path
+MODEL_PATH="pretrained/Qwen/Qwen2.5-VL-7B-Instruct"  # [ModelArguments] Pretrained model path
 OUTPUT_DIR="results"                   # Directory for saving checkpoints
 CACHE_DIR="results/cache"                          # [TrainingArguments] Cache directory for models
 
@@ -16,7 +23,10 @@ DATASETS="nusc%100"                  # [DataArguments] Dataset with sampling rat
 # ======================
 # Training Hyperparameters
 # ======================
-python finetune/qwenvl/train/train_qwen.py \
+torchrun --nproc_per_node=$NPROC_PER_NODE \
+         --master_addr=$MASTER_ADDR \
+         --master_port=$MASTER_PORT \
+         finetune/qwenvl/train/train_qwen.py \
          --model_name_or_path $MODEL_PATH \
          --tune_mm_llm True \
          --tune_mm_vision False \
@@ -48,4 +58,4 @@ python finetune/qwenvl/train/train_qwen.py \
          --logging_steps 10 \
          --save_steps 500 \
          --save_total_limit 3 \
-        #  --deepspeed finetune/qwenvl/scripts/zero3.json \
+         --deepspeed finetune/qwenvl/scripts/zero3.json \

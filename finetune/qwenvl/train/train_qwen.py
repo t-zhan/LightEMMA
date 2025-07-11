@@ -103,12 +103,15 @@ def train(attn_implementation="flash_attention_2"):
     local_rank = training_args.local_rank
     os.makedirs(training_args.output_dir, exist_ok=True)
 
+    device_map = None if torch.distributed.is_initialized() else "auto"
+    
     if "qwen2.5" in model_args.model_name_or_path.lower():
         model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             model_args.model_name_or_path,
             cache_dir=training_args.cache_dir,
             attn_implementation=attn_implementation,
             torch_dtype=(torch.bfloat16 if training_args.bf16 else None),
+            device_map=device_map,
         )
         data_args.image_processor = AutoProcessor.from_pretrained(
             model_args.model_name_or_path,
@@ -121,6 +124,7 @@ def train(attn_implementation="flash_attention_2"):
             cache_dir=training_args.cache_dir,
             attn_implementation=attn_implementation,
             torch_dtype=(torch.bfloat16 if training_args.bf16 else None),
+            device_map=device_map,
         )
         data_args.image_processor = Qwen2VLImageProcessor.from_pretrained(
             model_args.model_name_or_path,
@@ -150,7 +154,7 @@ def train(attn_implementation="flash_attention_2"):
     )
     set_model(model_args, model)
 
-    if torch.distributed.get_rank() == 0:
+    if not torch.distributed.is_initialized() or torch.distributed.get_rank() == 0:
         model.visual.print_trainable_parameters()
         model.model.print_trainable_parameters()
 
