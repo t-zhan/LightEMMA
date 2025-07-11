@@ -201,6 +201,6 @@ marimo/_lsp/
 __marimo__/
 
 /data
-pretrained/
-results/
-.vscode/
+/pretrained
+/results
+/.vscode

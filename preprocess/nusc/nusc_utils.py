@@ -325,7 +325,7 @@ class nuscFormatter:
 
 
 if __name__ == "__main__":
-    data_path = "data/raw/nusc/NuScenes"
+    data_path = "data/raw/nusc/nuscenes"
     qa_path = "data/raw/nusc/nuScenes_QA"
     instruction_path = "data/raw/nusc/doScenes"
     dst_path = "data/processed/nusc/nusc2qwen.json"
